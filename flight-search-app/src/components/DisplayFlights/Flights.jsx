@@ -1,0 +1,139 @@
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Table, Loader, Dropdown, Button } from 'semantic-ui-react';
+import FlightListItem from './FlightListItem';
+import styled from 'styled-components';
+import FlightsStore from '../../redux/Flights';
+
+const StyledDiv = styled.div`
+    margin-top: 50px;
+`;
+
+const Flights = props => {
+
+    const options = [
+        {
+            key: '5',
+            text: '5',
+            value: '5',
+        },
+        {
+            key: '10',
+            text: '10',
+            value: '10',
+        },
+        {
+            key: '15',
+            text: '15',
+            value: '15',
+        },
+        {
+            key: '20',
+            text: '20',
+            value: '20',
+        },
+    ]
+
+    const [pageNum, setPageNum] = useState(props.pageNum);
+
+    const dispatch = useDispatch();
+
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+
+    const flightsList = useSelector(state => state.flights.flights);
+    const loading = useSelector(state => state.flights.loading);
+
+    const currentItems = flightsList.slice(0, itemsPerPage);
+
+    const handleChange = (e, data) => {
+        setItemsPerPage(data.value);
+    }
+
+    const handlePrev = (e) => {
+        e.preventDefault();
+        if(pageNum !== 0){
+            setPageNum(pageNum - 1);
+            dispatch(FlightsStore.actions.getFlightList(pageNum - 1));
+        }
+    }
+
+    const handleNext = (e) => {
+        e.preventDefault();
+        if(flightsList.length !== 0){
+            setPageNum(pageNum + 1);
+            dispatch(FlightsStore.actions.getFlightList(pageNum + 1));
+            
+        }
+    }
+
+    return(
+        <React.Fragment>
+            {loading ? (
+                <>
+                  <Loader active inline='centered' />
+                </>
+            ) : (
+                <StyledDiv>
+                    <Table striped color='blue'>
+                        <Table.Header >
+                            <Table.Row style={{ textAlign: 'center' }}>
+                                <Table.HeaderCell>Flight Name</Table.HeaderCell>
+                                <Table.HeaderCell>Flight Number</Table.HeaderCell>
+                                <Table.HeaderCell>AirlineCode</Table.HeaderCell>
+                                <Table.HeaderCell>Flight Direction</Table.HeaderCell>
+                                <Table.HeaderCell>Scheduled Date</Table.HeaderCell>
+                                <Table.HeaderCell>Scheduled Time</Table.HeaderCell>
+                                <Table.HeaderCell></Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {currentItems.map(flight => {
+                                return <Table.Row key={flight.id} style={{ textAlign: 'center' }}>
+                                    <FlightListItem  flight={flight}/>
+                                </Table.Row>
+                            })}
+                        </Table.Body>
+                        <Table.Footer>
+                            <Table.Row>
+                                <Table.HeaderCell colSpan='7'>
+                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'row', marginTop: '10px' }}>
+                                            <p> Page: {pageNum + 1} </p>
+                                            <div style={{ display: 'flex', flexDirection: 'row', marginLeft: '10px' }}>
+                                                <p>Items per page : </p>
+                                                <Dropdown
+                                                    inline
+                                                    options={options}
+                                                    defaultValue={options[0].value}
+                                                    style={{ marginLeft: '10px' }}
+                                                    onChange={handleChange}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                            <Button 
+                                                inverted
+                                                color = 'blue'
+                                                onClick={handlePrev}
+                                                disabled={pageNum === 0}
+                                            > Prev </Button>
+                                            <Button
+                                                inverted
+                                                color = 'blue'
+                                                onClick={handleNext}
+                                                disabled={flightsList.length === 0}
+                                            > Next </Button>
+                                        </div>
+                                    </div>
+                                   
+                                </Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Footer>
+                    </Table>
+                </StyledDiv>
+            )}
+        </React.Fragment>
+    );
+};
+
+export default Flights

@@ -6,20 +6,26 @@ import request from 'superagent';
 const types = {
     GET_FLIGHT_LIST_REQUESTED : 'GET_FLIGHT_LIST_REQUESTED',
     GET_FLIGHT_LIST_SUCCEEDED : ' GET_FLIGHT_LIST_SUCCEEDED',
-    GET_FLIGHT_LIST_FAILED : 'GET_FLIGHT_LIST_FAILED'
+    GET_FLIGHT_LIST_FAILED : 'GET_FLIGHT_LIST_FAILED',
+    ADD_TRACK_COUNT: 'ADD_TRACK_COUNT'
 };
 
 // actions for questions
 export const actions = {
-    getFlightList : () => ({
+    getFlightList : (page) => ({
         type: types.GET_FLIGHT_LIST_REQUESTED,
+        page
+    }),
+    addTrackCount: () => ({
+        type: types.ADD_TRACK_COUNT
     })
 };
 
 export const initialState = {
     flights: [],
     loading: false,
-    error: ""
+    error: "",
+    trackCount: 0,
 };
 
 export default function reducer(state=initialState, action){
@@ -41,6 +47,12 @@ export default function reducer(state=initialState, action){
                 error: action.payload,
                 loading: false
             };
+        case types.ADD_TRACK_COUNT: {
+            return {
+                ...state,
+                trackCount: state.trackCount + 1
+            }
+        }
         default:
             return state;
     }
@@ -51,15 +63,15 @@ export function* saga(){
     yield takeEvery(types.GET_FLIGHT_LIST_REQUESTED, fetchFlightListWorker);
 };
  
-export function* fetchFlightListWorker(){
+export function* fetchFlightListWorker( { page }){
     try{
-        const response = yield call(getFlightLists);
-        // const response = data;
-        console.log(response);
+        const response = yield call(getFlightLists, { page });
+       
         let list = [];
         if(response.body.flights.length >= 1) {
             list = response.body.flights.map((flight) => {
                 return {
+                    id: flight.id,
                     flightName: flight.flightName,
                     flightNumber:  flight.flightNumber,
                     mainFlight: flight.mainFlight,
@@ -77,8 +89,6 @@ export function* fetchFlightListWorker(){
             })
         }
 
-
-        console.log(list);
         yield put({
             type: types.GET_FLIGHT_LIST_SUCCEEDED,
             payload: list
@@ -92,9 +102,9 @@ export function* fetchFlightListWorker(){
     } 
 };
 
-function getFlightLists() {
+function getFlightLists({ page }) {
     return request
-    .get(`/api/public-flights/flights`)
+    .get(`/api/public-flights/flights?page=${page}`)
     .set('Accept', `application/json`)
     .set('ResourceVersion', `v4`)
 }
