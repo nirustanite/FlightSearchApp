@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import Pages from './pages/Pages';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from "react-redux";
+import store from "./redux/store";
 import 'semantic-ui-css/semantic.min.css'
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Pages />
-  </BrowserRouter>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <Pages />
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root')
 );
 
