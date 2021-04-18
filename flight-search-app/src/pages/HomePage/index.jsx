@@ -1,7 +1,9 @@
 import React from 'react';
-import { Header, Container } from 'semantic-ui-react';
+import { useDispatch } from 'react-redux'
+import { Header, Container, Button } from 'semantic-ui-react';
 import styled from 'styled-components';
 import Page from '../Page';
+import FlightsStore from '../../redux/Flights';
 
 const StyledHeader = styled(Header)`
     text-align: center;
@@ -10,10 +12,17 @@ const StyledHeader = styled(Header)`
 
 const HomePage = () => {
 
+    const dispatch = useDispatch();
+
+    const handleClick = () => {
+        dispatch(FlightsStore.actions.getFlightList());
+    }
+
     return (
         <Page> 
             <Container>
                 <StyledHeader as="h1">Search your Flights</StyledHeader>
+                <Button onClick={handleClick}>Hey</Button>
             </Container>
         </Page>
     );
