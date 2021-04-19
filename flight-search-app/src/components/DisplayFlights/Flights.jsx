@@ -32,7 +32,7 @@ const Flights = props => {
             text: '20',
             value: '20',
         },
-    ]
+    ];
 
     const [pageNum, setPageNum] = useState(props.pageNum);
 
@@ -42,6 +42,7 @@ const Flights = props => {
 
     const flightsList = useSelector(state => state.flights.flights);
     const loading = useSelector(state => state.flights.loading);
+    const queryObj = useSelector(state => state.flights.queryObj);
 
     const currentItems = flightsList.slice(0, itemsPerPage);
 
@@ -53,7 +54,12 @@ const Flights = props => {
         e.preventDefault();
         if(pageNum !== 0){
             setPageNum(pageNum - 1);
-            dispatch(FlightsStore.actions.getFlightList(pageNum - 1));
+            if(queryObj.airline || queryObj.scheduleDate){
+                dispatch(FlightsStore.actions.getFlightList(pageNum - 1, queryObj));
+            }else{
+                dispatch(FlightsStore.actions.getFlightList(pageNum - 1));
+            }
+            
         }
     }
 
@@ -61,7 +67,12 @@ const Flights = props => {
         e.preventDefault();
         if(flightsList.length !== 0){
             setPageNum(pageNum + 1);
-            dispatch(FlightsStore.actions.getFlightList(pageNum + 1));
+            if(queryObj.airline || queryObj.scheduleDate){
+                dispatch(FlightsStore.actions.getFlightList(pageNum + 1, queryObj));
+            }else{
+                dispatch(FlightsStore.actions.getFlightList(pageNum + 1));
+            }
+            // dispatch(FlightsStore.actions.getFlightList(pageNum + 1));
             
         }
     }
@@ -89,7 +100,7 @@ const Flights = props => {
                         <Table.Body>
                             {currentItems.map(flight => {
                                 return <Table.Row key={flight.id} style={{ textAlign: 'center' }}>
-                                    <FlightListItem  flight={flight}/>
+                                    <FlightListItem flight={flight}/>
                                 </Table.Row>
                             })}
                         </Table.Body>
@@ -125,7 +136,6 @@ const Flights = props => {
                                             > Next </Button>
                                         </div>
                                     </div>
-                                   
                                 </Table.HeaderCell>
                             </Table.Row>
                         </Table.Footer>

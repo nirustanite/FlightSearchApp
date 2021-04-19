@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import Page from '../Page';
 import FlightsStore from '../../redux/Flights';
 import Flights from '../../components/DisplayFlights/Flights';
+import TrackedList from '../../components/TrackedList/TrackedList';
+import Search from '../../components/Search/Search';
 
 const StyledHeader = styled(Header)`
     text-align: center;
@@ -19,11 +21,14 @@ const HomePage = () => {
         dispatch(FlightsStore.actions.getFlightList(0));
     },[dispatch]);
 
+   
     return (
         <Page> 
             <Container>
                 <StyledHeader as="h1">Search your Flights</StyledHeader>
+                <Search/>
                 <Flights pageNum={0} />
+                <TrackedList />
             </Container>
         </Page>
     );

@@ -1,8 +1,9 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Table } from 'semantic-ui-react';
 import styled from 'styled-components';
-import FlightsStore from '../../redux/Flights';
+import TrackedListStore from '../../redux/TrackedList';
+
 
 const StyledButton = styled(Button)`
     &.ui.button{
@@ -15,17 +16,30 @@ const StyledButton = styled(Button)`
     }
 `;
 
-
-
 const FlightListItem = ({ flight }) => {
+
+    const [buttonTracked, setButtonTracked] = useState(false);
+
+    const trackList = useSelector(state => state.trackedList.trackList);
+
+    useEffect(() => {
+        if(trackList.some(el => el.id === flight.id)){
+            setButtonTracked(true);
+        }else{
+            setButtonTracked(false);
+        }
+    }, [flight, trackList]);
 
     const dispatch = useDispatch();
 
-    const handleClick = (e) => {
-        e.preventDefault();
-        dispatch(FlightsStore.actions.addTrackCount());  
+    const handleTrack = (flight) => {
+        setButtonTracked(!buttonTracked);
+        dispatch(TrackedListStore.actions.addTrackList(flight));  
     };
 
+    const handleUntrack = (flight) => {
+        dispatch(TrackedListStore.actions.removeFromTrackList(flight.id)); 
+    };
 
     return(
         <React.Fragment>
@@ -42,17 +56,31 @@ const FlightListItem = ({ flight }) => {
                 {flight.flightDirection ? flight.flightDirection : '-' }
             </Table.Cell>
             <Table.Cell>
-                {flight.scheduledDate ? flight.scheduledDate : '-' }
+                {flight.scheduleDate ? flight.scheduleDate : '-' }
             </Table.Cell>
             <Table.Cell>
-                {flight.scheduledTime ? flight.scheduledTime : '-' }
+                {flight.scheduleTime ? flight.scheduleTime : '-' }
             </Table.Cell>
             <Table.Cell>
-                <StyledButton 
-                   onClick={handleClick}
-                >
-                  Track
-                </StyledButton>
+                {buttonTracked ? (
+                    <StyledButton 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleUntrack(flight);
+                        }}
+                    >
+                        UnTrack
+                    </StyledButton>
+                ) :(
+                     <StyledButton 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleTrack(flight);
+                        }}
+                    >
+                        Track
+                  </StyledButton>
+                )} 
             </Table.Cell>
         </React.Fragment>
     );

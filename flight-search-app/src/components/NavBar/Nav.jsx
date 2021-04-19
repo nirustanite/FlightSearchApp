@@ -45,7 +45,7 @@ const Nav = () => {
         path:'/tracked-flights'
     });
 
-    const trackCount = useSelector(state => state.flights.trackCount)
+    const trackList = useSelector(state => state.trackedList.trackList)
 
     return(
         <StyledMenu fixed="top" stackable>
@@ -62,19 +62,17 @@ const Nav = () => {
                 >
                     Home
                 </Menu.Item>
-                <Menu.Menu position="right"> 
-                    <Menu.Item 
-                        float="right"
-                        as={Link}
-                        name="Trackedlist"
-                        to={routes.TRACKED_FLIGHTS}
-                        active={!!matchTrackedFlights}
-                    >
-                         TrackedFlights &nbsp;
-                        <StyledDiv>{trackCount}</StyledDiv>
-                    </Menu.Item>
-                </Menu.Menu>
-                
+               
+                <Menu.Item 
+                    float="right"
+                    as={Link}
+                    name="Trackedlist"
+                    to={routes.TRACKED_FLIGHTS}
+                    active={!!matchTrackedFlights}
+                >
+                    TrackedFlights &nbsp;
+                    <StyledDiv>{trackList.length}</StyledDiv>
+                </Menu.Item>
             </Container>
         </StyledMenu>
     );
