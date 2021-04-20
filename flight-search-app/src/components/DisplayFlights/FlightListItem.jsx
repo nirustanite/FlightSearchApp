@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Button, Table } from 'semantic-ui-react';
 import styled from 'styled-components';
 import TrackedListStore from '../../redux/TrackedList';
@@ -40,7 +41,9 @@ const FlightListItem = ({ flight }) => {
     return(
         <React.Fragment>
             <Table.Cell>
-                {flight.flightName ? flight.flightName : '-' }
+                <Link to={`/flight-details/${flight.id}`}>
+                    {flight.flightName ? flight.flightName : '-' }
+                </Link>
             </Table.Cell>
             <Table.Cell>
                 {flight.flightNumber ? flight.flightNumber : '-' }

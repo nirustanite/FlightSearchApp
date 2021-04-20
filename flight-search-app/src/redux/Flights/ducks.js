@@ -6,7 +6,10 @@ const types = {
     GET_FLIGHT_LIST_REQUESTED : 'GET_FLIGHT_LIST_REQUESTED',
     GET_FLIGHT_LIST_SUCCEEDED : ' GET_FLIGHT_LIST_SUCCEEDED',
     GET_FLIGHT_LIST_FAILED : 'GET_FLIGHT_LIST_FAILED',
-    SET_QUERY_LIST: "SET_QUERY_LIST"
+    SET_QUERY_LIST: "SET_QUERY_LIST",
+    GET_FLIGHT_DETAILS_REQUESTED: 'GET_FLIGHT_DETAILS_REQUESTED',
+    GET_FLIGHT_DETAILS_SUCCEEDED: 'GET_FLIGHT_DETAILS_SUCCEEDED',
+    GET_FLIGHT_DETAILS_FAILED: 'GET_FLIGHT_DETAILS_FAILED'
 };
 
 
@@ -16,20 +19,22 @@ export const actions = {
         page,
         data
     }),
-    setQueryList : (qObj) => {
-        return{
-            type: types.SET_QUERY_LIST,
-            qObj
-        }
-       
-    }
+    setQueryList : (qObj) => ({
+        type: types.SET_QUERY_LIST,
+        qObj
+    }),
+    getFlightDetails: (flightId) => ({
+        type: types.GET_FLIGHT_DETAILS_REQUESTED,
+        flightId
+    })
 };
 
 export const initialState = {
     flights: [],
     loading: false,
     error: "",
-    queryObj: {}
+    queryObj: {},
+    flight: {}
 };
 
 export default function reducer(state=initialState, action){
@@ -57,6 +62,23 @@ export default function reducer(state=initialState, action){
                 queryObj: {...action.qObj},
                 error: ""
             };
+        case types.GET_FLIGHT_DETAILS_REQUESTED:
+            return{
+                ...state,
+                loading: true
+            }
+        case types.GET_FLIGHT_DETAILS_SUCCEEDED:
+            return{
+                ...state,
+                flight: action.payload,
+                loading: false
+            }
+        case types.GET_FLIGHT_DETAILS_FAILED:
+            return{
+                ...state,
+                erro: action.payload,
+                loading: false
+            }
         default:
             return state;
     }
@@ -65,6 +87,7 @@ export default function reducer(state=initialState, action){
 
 export function* saga(){
     yield takeEvery(types.GET_FLIGHT_LIST_REQUESTED, fetchFlightListWorker);
+    yield takeEvery(types.GET_FLIGHT_DETAILS_REQUESTED, fetchFlightDetailsWorker);
 };
  
 export function* fetchFlightListWorker( { page, data }){
@@ -83,11 +106,35 @@ export function* fetchFlightListWorker( { page, data }){
         }); 
     } 
 };
+ 
+export function* fetchFlightDetailsWorker({ flightId }){
+    try{
+        const response = yield call(callFlightDetails, { flightId });
+
+        yield put({
+            type: types.GET_FLIGHT_DETAILS_SUCCEEDED,
+            payload: response.body
+        }); 
+    }
+    catch(error){
+        yield put({
+            type: types.GET_FLIGHT_DETAILS_FAILED,
+            payload: "Error Occurred"
+        }); 
+    } 
+}
 
 function getFlightLists({ page, data }) {
     return request
     .get(`/api/public-flights/flights?page=${page}`)
     .query(data)
+    .set('Accept', `application/json`)
+    .set('ResourceVersion', `v4`)
+}
+
+function callFlightDetails({ flightId }){
+    return request
+    .get(`/api/public-flights/flights/${flightId}`)
     .set('Accept', `application/json`)
     .set('ResourceVersion', `v4`)
 }

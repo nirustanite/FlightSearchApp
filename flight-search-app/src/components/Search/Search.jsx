@@ -4,6 +4,8 @@ import { Form, Button, Popup , Icon } from 'semantic-ui-react';
 import { useForm } from "react-hook-form";
 import styled from 'styled-components';
 import FlightsStore from '../../redux/Flights';
+import useViewport from '../../util/useViewport';
+
 
 const StyledDiv = styled.div`
     display: flex;
@@ -24,6 +26,10 @@ const StyledP = styled.p`
 
 
 const Search = () => {
+
+    const { width } = useViewport();
+
+    const breakpoint = 750;
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -52,7 +58,7 @@ const Search = () => {
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
-            <Form.Field width={4}>
+            <Form.Field width={width > breakpoint ? 4 : 16}>
                 <label htmlFor="scheduledDate"> Scheduled Date </label>
                 <input 
                     type="date"
@@ -62,7 +68,7 @@ const Search = () => {
                 />
             </Form.Field>
     
-            <Form.Field width={4}>
+            <Form.Field width={width > breakpoint ? 4 : 16}>
                 <label htmlFor="airline"> Airline </label>
                 <StyledDiv>
                     <input 

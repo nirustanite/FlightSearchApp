@@ -5,6 +5,7 @@ import ErrorBoundary from '../util/ErrorBoundary';
 
 const HomePage = lazy(() => import('./HomePage'));
 const TrackedList = lazy(() =>  import('./TrackedList'));
+const DetailsPage = lazy(() => import('./DetailsPage'));
 
 const Pages = () => {
     return (
@@ -13,6 +14,7 @@ const Pages = () => {
                 <Switch>
                     <Route path={routes.HOME} exact component={HomePage} />
                     <Route path={routes.TRACKED_FLIGHTS} component={TrackedList} />
+                    <Route path={routes.FLIGHT_DETAILS} component={DetailsPage} />
                 </Switch>
             </Suspense>
         </ErrorBoundary>
