@@ -12,7 +12,15 @@ const enhancer = composeEnhancers(
     applyMiddleware(sagaMiddleware)
 )
 
+// const persistedState = localStorage.getItem('state') 
+//                        ? JSON.parse(localStorage.getItem('state'))
+//                        : {}
+
 const store = createStore(rootReducer, enhancer);
+
+// store.subscribe(()=>{
+//     localStorage.setItem('state', JSON.stringify(store.getState()))
+// })
 
 sagaMiddleware.run(rootSaga);
 

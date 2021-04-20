@@ -1,25 +1,35 @@
 import { takeEvery, put, call } from "redux-saga/effects";
 import request from 'superagent';
-//import { app_id, app_key } from '../../config';
 
 //action types
 const types = {
     GET_FLIGHT_LIST_REQUESTED : 'GET_FLIGHT_LIST_REQUESTED',
     GET_FLIGHT_LIST_SUCCEEDED : ' GET_FLIGHT_LIST_SUCCEEDED',
-    GET_FLIGHT_LIST_FAILED : 'GET_FLIGHT_LIST_FAILED'
+    GET_FLIGHT_LIST_FAILED : 'GET_FLIGHT_LIST_FAILED',
+    SET_QUERY_LIST: "SET_QUERY_LIST"
 };
 
-// actions for questions
+
 export const actions = {
-    getFlightList : () => ({
+    getFlightList : (page, data) => ({
         type: types.GET_FLIGHT_LIST_REQUESTED,
-    })
+        page,
+        data
+    }),
+    setQueryList : (qObj) => {
+        return{
+            type: types.SET_QUERY_LIST,
+            qObj
+        }
+       
+    }
 };
 
 export const initialState = {
     flights: [],
     loading: false,
-    error: ""
+    error: "",
+    queryObj: {}
 };
 
 export default function reducer(state=initialState, action){
@@ -41,6 +51,12 @@ export default function reducer(state=initialState, action){
                 error: action.payload,
                 loading: false
             };
+        case types.SET_QUERY_LIST:
+            return{
+                ...state,
+                queryObj: {...action.qObj},
+                error: ""
+            };
         default:
             return state;
     }
@@ -51,37 +67,13 @@ export function* saga(){
     yield takeEvery(types.GET_FLIGHT_LIST_REQUESTED, fetchFlightListWorker);
 };
  
-export function* fetchFlightListWorker(){
+export function* fetchFlightListWorker( { page, data }){
     try{
-        const response = yield call(getFlightLists);
-        // const response = data;
-        console.log(response);
-        let list = [];
-        if(response.body.flights.length >= 1) {
-            list = response.body.flights.map((flight) => {
-                return {
-                    flightName: flight.flightName,
-                    flightNumber:  flight.flightNumber,
-                    mainFlight: flight.mainFlight,
-                    airlineCode: flight.airlineCode,
-                    flightDirection: flight.flightDirection,
-                    scheduledDate:flight.scheduleDate,
-                    scheduledTime: flight.scheduleTime,
-                    estimatedLandingTime: flight.estimatedLandingTime,
-                    expectedTimeOnBelt: flight.expectedTimeOnBelt,
-                    gate: flight.gate,
-                    terminal: flight.terminal,
-                    route: flight.route,
-                    baggageClaim: flight.baggageClaim
-                }
-            })
-        }
+        const response = yield call(getFlightLists, { page, data });
 
-
-        console.log(list);
         yield put({
             type: types.GET_FLIGHT_LIST_SUCCEEDED,
-            payload: list
+            payload: response.body.flights
         }); 
     }
     catch(error){
@@ -92,9 +84,10 @@ export function* fetchFlightListWorker(){
     } 
 };
 
-function getFlightLists() {
+function getFlightLists({ page, data }) {
     return request
-    .get(`/api/public-flights/flights`)
+    .get(`/api/public-flights/flights?page=${page}`)
+    .query(data)
     .set('Accept', `application/json`)
     .set('ResourceVersion', `v4`)
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Menu, Container, Icon } from 'semantic-ui-react';
 import { useRouteMatch, Link } from "react-router-dom";
 import routes from '../../pages/routes';
@@ -21,12 +22,30 @@ const StyledMenu = styled(Menu)`
     }   
 `;
 
+const StyledDiv = styled.div`
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+
+    background: #0085bb;
+    border: 2px solid #0085bb;
+    color: white;
+    text-align: center;
+`;
+
 const Nav = () => {
 
     const matchHome = useRouteMatch({
         path: "/",
         exact: true
     });
+
+    const matchTrackedFlights = useRouteMatch({
+        path:'/tracked-flights'
+    });
+
+    const trackList = useSelector(state => state.trackedList.trackList)
 
     return(
         <StyledMenu fixed="top" stackable>
@@ -42,6 +61,17 @@ const Nav = () => {
                     active={!!matchHome}
                 >
                     Home
+                </Menu.Item>
+               
+                <Menu.Item 
+                    float="right"
+                    as={Link}
+                    name="Trackedlist"
+                    to={routes.TRACKED_FLIGHTS}
+                    active={!!matchTrackedFlights}
+                >
+                    TrackedFlights &nbsp;
+                    <StyledDiv>{trackList.length}</StyledDiv>
                 </Menu.Item>
             </Container>
         </StyledMenu>

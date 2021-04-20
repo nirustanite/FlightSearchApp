@@ -3,7 +3,7 @@ import map from "lodash/map";
 import flights from './Flights';
 
 const combinedSagas = [
-  flights.saga,
+  flights.saga
 ];
 
 export default function* root() {
