@@ -54,7 +54,8 @@ export default function reducer(state=initialState, action){
         case types.SET_QUERY_LIST:
             return{
                 ...state,
-                queryObj: {...action.qObj}
+                queryObj: {...action.qObj},
+                error: ""
             };
         default:
             return state;

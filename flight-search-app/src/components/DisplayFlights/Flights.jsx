@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Table, Loader, Dropdown, Button } from 'semantic-ui-react';
+import { Table, Loader, Dropdown, Button, Header } from 'semantic-ui-react';
 import FlightListItem from './FlightListItem';
 import styled from 'styled-components';
 import FlightsStore from '../../redux/Flights';
@@ -41,6 +41,7 @@ const Flights = props => {
     const [itemsPerPage, setItemsPerPage] = useState(5);
 
     const flightsList = useSelector(state => state.flights.flights);
+    const error = useSelector(state => state.flights.error);
     const loading = useSelector(state => state.flights.loading);
     const queryObj = useSelector(state => state.flights.queryObj);
 
@@ -85,6 +86,9 @@ const Flights = props => {
                 </>
             ) : (
                 <StyledDiv>
+                    {error ? (
+                        <Header as='h4'> Sorry no flights found. Search again with different values </Header>
+                    ) : ( 
                     <Table striped color='blue'>
                         <Table.Header >
                             <Table.Row style={{ textAlign: 'center' }}>
@@ -139,7 +143,7 @@ const Flights = props => {
                                 </Table.HeaderCell>
                             </Table.Row>
                         </Table.Footer>
-                    </Table>
+                    </Table>)}
                 </StyledDiv>
             )}
         </React.Fragment>

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import Page from '../Page';
 import FlightsStore from '../../redux/Flights';
 import Flights from '../../components/DisplayFlights/Flights';
-import TrackedList from '../../components/TrackedList/TrackedList';
 import Search from '../../components/Search/Search';
 
 const StyledHeader = styled(Header)`
@@ -28,7 +27,6 @@ const HomePage = () => {
                 <StyledHeader as="h1">Search your Flights</StyledHeader>
                 <Search/>
                 <Flights pageNum={0} />
-                <TrackedList />
             </Container>
         </Page>
     );

@@ -10,9 +10,22 @@ const StyledDiv = styled.div`
     flexDirection: row;
 `;
 
+
+const StyledButton = styled(Button)`
+    &.ui.button{
+        color: white !important;
+        background: 2px #0085bb !important;
+    }
+`;
+
+const StyledP = styled.p`
+    color: red;
+`;
+
+
 const Search = () => {
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const dispatch = useDispatch();
 
@@ -28,6 +41,15 @@ const Search = () => {
         dispatch(FlightsStore.actions.setQueryList(qObj));
         dispatch(FlightsStore.actions.getFlightList(0, qObj));
     };
+
+    const handleClick = (e) => {
+        let qObj = {}
+        e.preventDefault();
+        reset();
+        dispatch(FlightsStore.actions.setQueryList(qObj));
+        dispatch(FlightsStore.actions.getFlightList(0));
+    }
+
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Field width={4}>
@@ -46,6 +68,7 @@ const Search = () => {
                     <input 
                         type="search" 
                         name="airline"
+                        maxLength="3"
                         placeholder="Search through airline code"
                         {...register("airline", {
                             maxLength: 3,
@@ -68,12 +91,13 @@ const Search = () => {
             </Form.Field>
             
             {errors?.airline?.type === "maxLength" && (
-                <p>Airline should not exceed 3 characters</p>
+                <StyledP>Airline should not exceed 3 characters</StyledP>
             )}
             {errors?.airline?.type === "pattern" && (
-                <p>Airline value should be uppercase</p>
+                <StyledP>Airline value should be uppercase</StyledP>
             )}
-        <Button type='submit'>Search</Button>
+        <StyledButton type='submit' onClick={handleClick}>Reset</StyledButton>
+        <StyledButton type='submit'>Search</StyledButton>
       </Form>
     );
 };

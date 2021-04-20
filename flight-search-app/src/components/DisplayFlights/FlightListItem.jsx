@@ -10,10 +10,6 @@ const StyledButton = styled(Button)`
         color: white !important;
         background: 2px #0085bb !important;
     }
-    &.ui.button.hover {
-        background-color: #0085bb !important;
-        color: white !important
-    }
 `;
 
 const FlightListItem = ({ flight }) => {
