@@ -114,7 +114,7 @@ const Flights = props => {
                                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                         <div style={{ display: 'flex', flexDirection: 'row', marginTop: '10px' }}>
                                             <p> Page: {pageNum + 1} </p>
-                                            <div style={{ display: 'flex', flexDirection: 'row', marginLeft: '10px' }}>
+                                            <div style={{ display: 'flex', flexDirection: 'row', marginLeft: '10px', flexWrap: 'wrap' }}>
                                                 <p>Items per page : </p>
                                                 <Dropdown
                                                     inline
