@@ -1,9 +1,22 @@
 import React, { useState } from "react";
+import { useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 import { Sidebar, Icon, Menu } from "semantic-ui-react";
 import { useRouteMatch } from "react-router-dom";
 import routes from '../../pages/routes';
+import styled from 'styled-components';
 
+const StyledDiv = styled.div`
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+
+    background: #0085bb;
+    border: 2px solid #0085bb;
+    color: white;
+    text-align: center;
+`;
 const HamburgerMenu = (props) => {
 
     const [visible, setVisible] = useState(false);
@@ -12,12 +25,18 @@ const HamburgerMenu = (props) => {
         path: "/",
         exact: true
     });
+
+    const matchTrackedFlights = useRouteMatch({
+        path:'/tracked-flights'
+    });
   
     const handlePusher = () => {
         if (visible) setVisible(false);
     };
   
     const handleToggle = () => setVisible(!visible);
+
+    const trackList = useSelector(state => state.trackedList.trackList)
 
     return (
         <React.Fragment>
@@ -38,6 +57,16 @@ const HamburgerMenu = (props) => {
                          to={routes.HOME}
                        >
                          Home
+                       </Menu.Item>
+                       <Menu.Item
+                         name="TRACKEDLIST"
+                         // icon="building outline"
+                         active={!!matchTrackedFlights}
+                         as={Link}
+                         to={routes.TRACKED_FLIGHTS}
+                       >
+                         TrackedFlights &nbsp;
+                         <StyledDiv>{trackList.length}</StyledDiv>
                        </Menu.Item>
                     </Sidebar>
                     <Sidebar.Pusher
