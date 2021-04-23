@@ -9,7 +9,8 @@ const types = {
     SET_QUERY_LIST: "SET_QUERY_LIST",
     GET_FLIGHT_DETAILS_REQUESTED: 'GET_FLIGHT_DETAILS_REQUESTED',
     GET_FLIGHT_DETAILS_SUCCEEDED: 'GET_FLIGHT_DETAILS_SUCCEEDED',
-    GET_FLIGHT_DETAILS_FAILED: 'GET_FLIGHT_DETAILS_FAILED'
+    GET_FLIGHT_DETAILS_FAILED: 'GET_FLIGHT_DETAILS_FAILED',
+    SET_ITEMS_PER_PAGE: 'SET_ITEMS_PER_PAGE'
 };
 
 
@@ -26,6 +27,10 @@ export const actions = {
     getFlightDetails: (flightId) => ({
         type: types.GET_FLIGHT_DETAILS_REQUESTED,
         flightId
+    }),
+    setItemsPerPage: (itemNumber) => ({
+        type: types.SET_ITEMS_PER_PAGE,
+        itemNumber
     })
 };
 
@@ -34,7 +39,8 @@ export const initialState = {
     loading: false,
     error: "",
     queryObj: {},
-    flight: {}
+    flight: {},
+    itemNumber: 5
 };
 
 export default function reducer(state=initialState, action){
@@ -76,8 +82,13 @@ export default function reducer(state=initialState, action){
         case types.GET_FLIGHT_DETAILS_FAILED:
             return{
                 ...state,
-                erro: action.payload,
+                error: action.payload,
                 loading: false
+            }
+        case types.SET_ITEMS_PER_PAGE:
+            return{
+                ...state,
+                itemNumber: action.itemNumber
             }
         default:
             return state;

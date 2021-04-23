@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Button, Popup , Icon } from 'semantic-ui-react';
 import { useForm } from "react-hook-form";
 import styled from 'styled-components';
@@ -35,6 +35,8 @@ const Search = () => {
 
     const dispatch = useDispatch();
 
+    const queryObj = useSelector(state => state.flights.queryObj);
+
     const onSubmit = (data) => {
         let qObj = {};
             if(data.scheduleDate){
@@ -64,6 +66,7 @@ const Search = () => {
                     type="date"
                     id="scheduleDate"
                     name="scheduleDate"
+                    defaultValue={queryObj && queryObj.scheduleDate}
                     {...register("scheduleDate")}
                 />
             </Form.Field>
@@ -75,12 +78,13 @@ const Search = () => {
                         type="search" 
                         name="airline"
                         maxLength="3"
-                        placeholder="Search through airline code"
+                        placeholder="Search through airline"
                         {...register("airline", {
                             maxLength: 3,
                             pattern:/^[A-Z]+$/
                         })}
-                        style={{ marginTop: '2px' }}
+                        defaultValue={queryObj && queryObj.airline}
+                        style={{ marginTop: '2px', textTransform: 'uppercase' }}
                     />
                     <Popup
                         trigger={<Icon 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Header, Container } from 'semantic-ui-react';
 import styled from 'styled-components';
 import Page from '../Page';
@@ -16,17 +16,19 @@ const HomePage = () => {
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(FlightsStore.actions.getFlightList(0));
-    },[dispatch]);
+    const queryObj = useSelector(state => state.flights.queryObj);
+    const itemNumber = useSelector(state => state.flights.itemNumber);
 
+    useEffect(() => {
+        dispatch(FlightsStore.actions.getFlightList(0, queryObj));
+    },[dispatch, queryObj]);
    
     return (
         <Page> 
             <Container>
                 <StyledHeader as="h1">Search your Flights</StyledHeader>
                 <Search/>
-                <Flights pageNum={0} />
+                <Flights pageNum={0} itemNumber={itemNumber} />
             </Container>
         </Page>
     );
