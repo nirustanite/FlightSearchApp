@@ -38,17 +38,15 @@ const Flights = props => {
 
     const dispatch = useDispatch();
 
-    const [itemsPerPage, setItemsPerPage] = useState(5);
-
     const flightsList = useSelector(state => state.flights.flights);
     const error = useSelector(state => state.flights.error);
     const loading = useSelector(state => state.flights.loading);
     const queryObj = useSelector(state => state.flights.queryObj);
-
-    const currentItems = flightsList.slice(0, itemsPerPage);
+    
+    const currentItems = flightsList.slice(0, props.itemNumber);
 
     const handleChange = (e, data) => {
-        setItemsPerPage(data.value);
+        dispatch(FlightsStore.actions.setItemsPerPage(data.value));
     }
 
     const handlePrev = (e) => {
@@ -73,8 +71,6 @@ const Flights = props => {
             }else{
                 dispatch(FlightsStore.actions.getFlightList(pageNum + 1));
             }
-            // dispatch(FlightsStore.actions.getFlightList(pageNum + 1));
-            
         }
     }
 
@@ -89,7 +85,8 @@ const Flights = props => {
                     {error ? (
                         <Header as='h4'> Sorry no flights found. Search again with different values </Header>
                     ) : ( 
-                    <Table striped color='blue'>
+                    <>
+                    {flightsList.length >= 1 && <Table striped color='blue'>
                         <Table.Header >
                             <Table.Row style={{ textAlign: 'center' }}>
                                 <Table.HeaderCell>Flight Name</Table.HeaderCell>
@@ -119,7 +116,7 @@ const Flights = props => {
                                                 <Dropdown
                                                     inline
                                                     options={options}
-                                                    defaultValue={options[0].value}
+                                                    defaultValue={props.itemNumber}
                                                     style={{ marginLeft: '10px' }}
                                                     onChange={handleChange}
                                                 />
@@ -143,7 +140,9 @@ const Flights = props => {
                                 </Table.HeaderCell>
                             </Table.Row>
                         </Table.Footer>
-                    </Table>)}
+                    </Table>}
+                    </>
+                    )}
                 </StyledDiv>
             )}
         </React.Fragment>
