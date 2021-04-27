@@ -5,37 +5,14 @@ import FlightListItem from './FlightListItem';
 import styled from 'styled-components';
 import FlightsStore from '../../redux/Flights';
 
+
 const StyledDiv = styled.div`
     margin-top: 50px;
 `;
 
 const Flights = props => {
-
-    const options = [
-        {
-            key: '5',
-            text: '5',
-            value: '5',
-        },
-        {
-            key: '10',
-            text: '10',
-            value: '10',
-        },
-        {
-            key: '15',
-            text: '15',
-            value: '15',
-        },
-        {
-            key: '20',
-            text: '20',
-            value: '20',
-        },
-    ];
-
+   
     const [pageNum, setPageNum] = useState(props.pageNum);
-
     const dispatch = useDispatch();
 
     const flightsList = useSelector(state => state.flights.flights);
@@ -115,8 +92,8 @@ const Flights = props => {
                                                 <p>Items per page : </p>
                                                 <Dropdown
                                                     inline
-                                                    options={options}
-                                                    defaultValue={props.itemNumber}
+                                                    options={props.options}
+                                                    defaultValue={props.options[props.defaultValueIndex].value}
                                                     style={{ marginLeft: '10px' }}
                                                     onChange={handleChange}
                                                 />

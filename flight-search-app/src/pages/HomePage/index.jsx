@@ -6,6 +6,7 @@ import Page from '../Page';
 import FlightsStore from '../../redux/Flights';
 import Flights from '../../components/DisplayFlights/Flights';
 import Search from '../../components/Search/Search';
+import options from '../../util/options';
 
 const StyledHeader = styled(Header)`
     text-align: center;
@@ -28,7 +29,12 @@ const HomePage = () => {
             <Container>
                 <StyledHeader as="h1">Search your Flights</StyledHeader>
                 <Search/>
-                <Flights pageNum={0} itemNumber={itemNumber} />
+                <Flights 
+                    pageNum={0} 
+                    itemNumber={itemNumber} 
+                    options={options} 
+                    defaultValueIndex={itemNumber && options.findIndex(el=> parseInt(el.key) === parseInt(itemNumber))} 
+                />
             </Container>
         </Page>
     );
